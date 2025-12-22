@@ -1,0 +1,121 @@
+{
+	"info": {
+		"_postman_id": "7decd1de-4f82-4586-a12e-8efaa90a6cb5",
+		"name": "Campus Complaint Resolver API Copy",
+		"description": "APIs for Campus Complaint Resolver",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6336282",
+		"_collection_link": "https://lively-resonance-479735.postman.co/workspace/College-projects~9c7f1b84-f92b-4800-816f-4fa6f833d75a/collection/6336282-7decd1de-4f82-4586-a12e-8efaa90a6cb5?action=share&source=collection_link&creator=6336282"
+	},
+	"item": [
+		{
+			"name": "Complaints",
+			"item": [
+				{
+					"name": "Submit Complaint",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwtToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "request",
+									"value": "{\n  \"description\": \"Broken bench near library\",\n  \"latitude\": 37.7749,\n  \"longitude\": -122.4194\n}",
+									"contentType": "application/json",
+									"type": "text"
+								},
+								{
+									"key": "photo",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/complaints/submit",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"complaints",
+								"submit"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwtToken}}"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "request",
+											"value": "{\n  \"description\": \"Broken bench near library\",\n  \"latitude\": 37.7749,\n  \"longitude\": -122.4194\n}",
+											"contentType": "application/json",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/complaints/submit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"complaints",
+										"submit"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Complaint submitted\",\n  \"data\": {\n    \"id\": 1,\n    \"description\": \"Broken bench near library\",\n    \"status\": \"PENDING\",\n    \"submittedAt\": \"2025-12-17T10:00:00\",\n    \"latitude\": 37.7749,\n    \"longitude\": -122.4194,\n    \"submittedByName\": \"John Doe\",\n    \"locationAddress\": \"Campus location\"\n  },\n  \"error\": null\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "jwtToken",
+			"value": "PASTE_JWT_TOKEN_HERE",
+			"type": "string"
+		}
+	]
+}

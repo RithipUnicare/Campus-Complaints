@@ -1,0 +1,1425 @@
+{
+	"info": {
+		"_postman_id": "35c70a0c-052f-4628-a9c8-b253924548de",
+		"name": "Campus Complaint Resolver API",
+		"description": "Complete API collection for Campus Complaint Resolver Backend. Use {{baseUrl}} as http://localhost:8080. Set {{token}} with your JWT access token from /auth/login. All authenticated requests use Bearer {{token}}.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6336282",
+		"_collection_link": "https://lively-resonance-479735.postman.co/workspace/College-projects~9c7f1b84-f92b-4800-816f-4fa6f833d75a/collection/6336282-35c70a0c-052f-4628-a9c8-b253924548de?action=share&source=collection_link&creator=6336282"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Signup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Success response\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.eql(true);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe\",\n  \"mobileNumber\": \"9876543210\",\n  \"email\": \"john@example.com\",\n  \"password\": \"securePass123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"John Doe\",\n  \"mobileNumber\": \"9876543210\",\n  \"email\": \"john@example.com\",\n  \"password\": \"securePass123\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/auth/signup",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"User registered successfully!\",\n  \"data\": null,\n  \"error\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Tokens received\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.accessToken).to.exist;",
+									"    pm.expect(jsonData.data.refreshToken).to.exist;",
+									"    pm.collectionVariables.set(\"token\", jsonData.data.accessToken);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mobileNumber\": \"9999999999\",\n  \"password\": \"superadmin123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"mobileNumber\": \"9876543210\",\n  \"password\": \"securePass123\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/auth/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Login successful\",\n  \"data\": {\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiJ9...\",\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiJ9...\"\n  },\n  \"error\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refreshToken\": \"eyJhbGciOiJIUzI1NiJ9...\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/refresh",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"refreshToken\": \"eyJhbGciOiJIUzI1NiJ9...\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/auth/refresh",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"auth",
+										"refresh"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Token refreshed\",\n  \"data\": {\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiJ9...\"\n  },\n  \"error\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mobileNumber\": \"9876543210\",\n  \"roles\": \"ROLE_ADMIN\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/update-role",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"update-role"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"mobileNumber\": \"9876543210\",\n  \"roles\": \"ROLE_ADMIN\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/auth/update-role",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"auth",
+										"update-role"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"User role updated successfully\",\n  \"data\": null,\n  \"error\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Request Password Reset",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/request-password-reset",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"request-password-reset"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"john@example.com\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/auth/request-password-reset",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"auth",
+										"request-password-reset"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"OTP sent to your email\",\n  \"data\": null,\n  \"error\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john@example.com\",\n  \"otp\": \"123456\",\n  \"newPassword\": \"newSecurePass123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/reset-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"reset-password"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"john@example.com\",\n  \"otp\": \"123456\",\n  \"newPassword\": \"newSecurePass123\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/auth/reset-password",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"auth",
+										"reset-password"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Password updated successfully\",\n  \"data\": null,\n  \"error\": null\n}"
+						}
+					]
+				}
+			],
+			"description": "Login, Signup, and Auth-related endpoints. No auth required."
+		},
+		{
+			"name": "User Management",
+			"item": [
+				{
+					"name": "Get Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"profile"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/user/profile",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user",
+										"profile"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Profile fetched\",\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"John Doe\",\n    \"mobileNumber\": \"9876543210\",\n    \"roles\": \"ROLE_STUDENT\",\n    \"email\": \"john@example.com\"\n  },\n  \"error\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/user",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Users fetched\",\n  \"data\": [\n    {\n      \"id\": 1,\n      \"name\": \"John Doe\",\n      \"mobileNumber\": \"9876543210\",\n      \"roles\": \"ROLE_STUDENT\",\n      \"email\": \"john@example.com\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Admin User\",\n      \"mobileNumber\": \"1234567890\",\n      \"roles\": \"ROLE_ADMIN\",\n      \"email\": \"admin@example.com\"\n    }\n  ],\n  \"error\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/user/1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"User deleted successfully\",\n  \"data\": null,\n  \"error\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Edit User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mobileNumber\": \"9876543210\",\n  \"name\": \"John Updated\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user/edit",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"edit"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"mobileNumber\": \"9876543210\",\n  \"name\": \"John Updated\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/user/edit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user",
+										"edit"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"User updated successfully\",\n  \"data\": null,\n  \"error\": null\n}"
+						}
+					]
+				}
+			],
+			"description": "User profile and admin operations. Requires authentication."
+		},
+		{
+			"name": "Complaints",
+			"item": [
+				{
+					"name": "Submit Complaint",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "request",
+									"value": "{\n  \"description\": \"Broken bench near library\",\n  \"latitude\": 37.7749,\n  \"longitude\": -122.4194\n}",
+									"type": "text"
+								},
+								{
+									"key": "photo",
+									"type": "file",
+									"src": "[]"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/complaints/submit",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"complaints",
+								"submit"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "request",
+											"value": "{\n  \"description\": \"Broken bench near library\",\n  \"latitude\": 37.7749,\n  \"longitude\": -122.4194\n}",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"type": "file",
+											"src": "[]"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/complaints/submit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"complaints",
+										"submit"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Complaint submitted\",\n  \"data\": {\n    \"id\": 1,\n    \"description\": \"Broken bench near library\",\n    \"status\": \"PENDING\",\n    \"submittedAt\": \"2025-12-17T10:00:00\",\n    \"latitude\": 37.7749,\n    \"longitude\": -122.4194,\n    \"submittedByName\": \"John Doe\",\n    \"locationAddress\": \"Campus location\"\n  },\n  \"error\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Complaints for Map",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/complaints/map/list?status=PENDING&page=0&size=20&lat=37.7749&lng=-122.4194&radius=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"complaints",
+								"map",
+								"list"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "PENDING"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								},
+								{
+									"key": "lat",
+									"value": "37.7749"
+								},
+								{
+									"key": "lng",
+									"value": "-122.4194"
+								},
+								{
+									"key": "radius",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/complaints/map/list?status=PENDING&page=0&size=20&lat=37.7749&lng=-122.4194&radius=1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"complaints",
+										"map",
+										"list"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "PENDING"
+										},
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "20"
+										},
+										{
+											"key": "lat",
+											"value": "37.7749"
+										},
+										{
+											"key": "lng",
+											"value": "-122.4194"
+										},
+										{
+											"key": "radius",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Map data fetched\",\n  \"data\": {\n    \"content\": [\n      {\n        \"id\": 1,\n        \"latitude\": 37.7749,\n        \"longitude\": -122.4194,\n        \"descriptionSnippet\": \"Broken bench near library...\",\n        \"status\": \"PENDING\",\n        \"photoUrl\": \"https://bucket.s3.ap-south-1.amazonaws.com/complaints/123_photo.jpg\"\n      }\n    ],\n    \"pageable\": {\n      \"pageNumber\": 0,\n      \"pageSize\": 20,\n      \"totalElements\": 5\n    }\n  },\n  \"error\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Get My History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/complaints/history/my?status=RESOLVED&fromDate=2025-12-01T00:00:00&page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"complaints",
+								"history",
+								"my"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "RESOLVED"
+								},
+								{
+									"key": "fromDate",
+									"value": "2025-12-01T00:00:00"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/complaints/history/my?status=RESOLVED&fromDate=2025-12-01T00:00:00&page=0&size=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"complaints",
+										"history",
+										"my"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "RESOLVED"
+										},
+										{
+											"key": "fromDate",
+											"value": "2025-12-01T00:00:00"
+										},
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"History fetched\",\n  \"data\": {\n    \"content\": [\n      {\n        \"id\": 1,\n        \"description\": \"Broken bench near library\",\n        \"status\": \"RESOLVED\",\n        \"submittedAt\": \"2025-12-17T10:00:00\",\n        \"submittedByName\": \"John Doe\",\n        \"locationAddress\": \"Campus location\",\n        \"updates\": []\n      }\n    ],\n    \"pageable\": {\n      \"pageNumber\": 0,\n      \"pageSize\": 10,\n      \"totalElements\": 3\n    }\n  },\n  \"error\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Complaint Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/complaints/admin/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"complaints",
+								"admin",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/complaints/admin/1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"complaints",
+										"admin",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Details fetched\",\n  \"data\": {\n    \"id\": 1,\n    \"description\": \"Broken bench near library\",\n    \"status\": \"PENDING\",\n    \"photoUrl\": \"https://bucket.s3.ap-south-1.amazonaws.com/complaints/123_photo.jpg\",\n    \"submittedAt\": \"2025-12-17T10:00:00\",\n    \"submittedByName\": \"John Doe\",\n    \"locationAddress\": \"Campus location\",\n    \"latitude\": 37.7749,\n    \"longitude\": -122.4194,\n    \"resolutionNote\": null\n  },\n  \"error\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Status",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"newStatus\": \"IN_PROGRESS\",\n  \"note\": \"Team assigned\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/complaints/admin/1/update",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"complaints",
+								"admin",
+								"1",
+								"update"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"newStatus\": \"IN_PROGRESS\",\n  \"note\": \"Team assigned\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/complaints/admin/1/update",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"complaints",
+										"admin",
+										"1",
+										"update"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Status updated\",\n  \"data\": {\n    \"id\": 1,\n    \"status\": \"IN_PROGRESS\",\n    \"resolutionNote\": \"Team assigned\",\n    \"submittedAt\": \"2025-12-17T10:00:00\"\n  },\n  \"error\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Bulk Update Status",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"ids\": [1, 2],\n  \"newStatus\": \"RESOLVED\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/complaints/admin/bulk-update",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"complaints",
+								"admin",
+								"bulk-update"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"ids\": [1, 2],\n  \"newStatus\": \"RESOLVED\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/complaints/admin/bulk-update",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"complaints",
+										"admin",
+										"bulk-update"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Bulk update successful\",\n  \"data\": [\n    {\n      \"id\": 1,\n      \"status\": \"RESOLVED\"\n    },\n    {\n      \"id\": 2,\n      \"status\": \"RESOLVED\"\n    }\n  ],\n  \"error\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Search Complaints",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/complaints/admin/search?query=bench&status=IN_PROGRESS&fromDate=2025-12-01T00:00:00&page=0&size=20",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"complaints",
+								"admin",
+								"search"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "bench"
+								},
+								{
+									"key": "status",
+									"value": "IN_PROGRESS"
+								},
+								{
+									"key": "fromDate",
+									"value": "2025-12-01T00:00:00"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/complaints/admin/search?query=bench&status=IN_PROGRESS&fromDate=2025-12-01T00:00:00&page=0&size=20",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"complaints",
+										"admin",
+										"search"
+									],
+									"query": [
+										{
+											"key": "query",
+											"value": "bench"
+										},
+										{
+											"key": "status",
+											"value": "IN_PROGRESS"
+										},
+										{
+											"key": "fromDate",
+											"value": "2025-12-01T00:00:00"
+										},
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "20"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Search results\",\n  \"data\": {\n    \"content\": [\n      {\n        \"id\": 1,\n        \"description\": \"Broken bench near library\",\n        \"status\": \"IN_PROGRESS\",\n        \"submittedAt\": \"2025-12-17T10:00:00\"\n      }\n    ],\n    \"pageable\": {\n      \"pageNumber\": 0,\n      \"pageSize\": 20,\n      \"totalElements\": 2\n    }\n  },\n  \"error\": null\n}"
+						}
+					]
+				}
+			],
+			"description": "Complaint submission, viewing, and management. Role-based access."
+		},
+		{
+			"name": "Notifications",
+			"item": [
+				{
+					"name": "Get Unread Notifications",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications/unread?page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notifications",
+								"unread"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/notifications/unread?page=0&size=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"notifications",
+										"unread"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Unread notifications fetched\",\n  \"data\": {\n    \"content\": [\n      {\n        \"id\": 1,\n        \"message\": \"Your complaint #1 has changed to IN_PROGRESS.\",\n        \"read\": false,\n        \"sentAt\": \"2025-12-17T10:05:00\",\n        \"relatedComplaintId\": 1\n      }\n    ],\n    \"pageable\": {\n      \"pageNumber\": 0,\n      \"pageSize\": 10,\n      \"totalElements\": 2\n    }\n  },\n  \"error\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Mark as Read",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[1, 2]"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications/mark-read",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notifications",
+								"mark-read"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[1, 2]"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/notifications/mark-read",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"notifications",
+										"mark-read"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Notifications marked as read\",\n  \"data\": null,\n  \"error\": null\n}"
+						}
+					]
+				}
+			],
+			"description": "Notification management. Requires authentication."
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Optional: Set token from login response if needed"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiJ9...",
+			"type": "string"
+		}
+	]
+}
