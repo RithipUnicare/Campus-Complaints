@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { View, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
+import { View, ScrollView, TouchableOpacity, Dimensions, StyleSheet } from 'react-native';
 import { Text } from '@/components/ui/text';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useColorScheme } from 'nativewind';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -13,12 +12,21 @@ import { RootStackParamList } from '@/navigation/AppNavigation';
 import { apiService } from '@/service/api.service';
 import { Badge } from '@/components/ui/badge';
 import { AlertDialog } from '@/components/ui/alert-dialog';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { CommonActions } from '@react-navigation/native';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Profile'>;
 };
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
+const SPACING = {
+  xs: width * 0.01,
+  sm: width * 0.02,
+  md: width * 0.04,
+  lg: width * 0.06,
+  xl: width * 0.08,
+};
 
 export default function ProfileScreen({ navigation }: Props) {
   const { colorScheme } = useColorScheme();
@@ -37,6 +45,129 @@ export default function ProfileScreen({ navigation }: Props) {
     variant: 'info' as 'success' | 'error' | 'info',
     onConfirm: undefined as (() => void) | undefined,
   });
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    scrollContent: {
+      paddingHorizontal: SPACING.lg,
+      paddingVertical: SPACING.md,
+    },
+    headerButton: {
+      marginRight: SPACING.sm,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+    },
+    profileCard: {
+      marginBottom: SPACING.md,
+    },
+    profileHeader: {
+      alignItems: 'center',
+      paddingVertical: SPACING.lg,
+    },
+    avatarContainer: {
+      height: width * 0.24,
+      width: width * 0.24,
+      borderRadius: width * 0.12,
+      backgroundColor:
+        colorScheme === 'dark' ? 'rgba(59, 130, 246, 0.15)' : 'rgba(59, 130, 246, 0.1)',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: SPACING.md,
+    },
+    nameText: {
+      fontSize: width * 0.06,
+      fontWeight: 'bold',
+      marginBottom: SPACING.sm,
+    },
+    infoCard: {
+      marginBottom: SPACING.md,
+    },
+    fieldContainer: {
+      marginBottom: SPACING.md,
+    },
+    fieldLabel: {
+      marginBottom: SPACING.xs,
+    },
+    fieldValue: {
+      borderRadius: 12,
+      borderWidth: 1,
+      padding: SPACING.md,
+    },
+    buttonRow: {
+      flexDirection: 'row',
+      marginTop: SPACING.md,
+      gap: SPACING.sm,
+    },
+    saveButton: {
+      flex: 1,
+      backgroundColor: '#22c55e',
+    },
+    cancelButton: {
+      flex: 1,
+    },
+    actionsCard: {
+      marginBottom: SPACING.md,
+    },
+    logoutButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: SPACING.sm,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: '#ef4444',
+      backgroundColor:
+        colorScheme === 'dark' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(239, 68, 68, 0.1)',
+      padding: SPACING.md,
+    },
+    loadingContainer: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    loadingText: {
+      marginTop: SPACING.md,
+      fontSize: width * 0.045,
+    },
+  });
+
+  // Set navigation header options with Edit button
+  useLayoutEffect(() => {
+    const isSuperAdmin = userProfile?.roles === 'SUPERADMIN';
+
+    navigation.setOptions({
+      title: 'Profile',
+      headerRight: () =>
+        !loading ? (
+          isEditing ? (
+            <TouchableOpacity
+              onPress={() => {
+                setIsEditing(false);
+                setFormData({
+                  name: userProfile?.name || '',
+                  mobileNumber: userProfile?.mobileNumber || '',
+                });
+              }}
+              style={{ marginRight: 12, flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              <Icon name="close" size={20} color={colorScheme === 'dark' ? '#fff' : '#374151'} />
+              <Text
+                style={{ color: colorScheme === 'dark' ? '#fff' : '#374151', fontWeight: '500' }}>
+                Cancel
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={() => setIsEditing(true)}
+              style={{ marginRight: 12, flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              <Icon name="pencil" size={20} color="#3b82f6" />
+              <Text style={{ color: '#3b82f6', fontWeight: '600' }}>Edit</Text>
+            </TouchableOpacity>
+          )
+        ) : null,
+    });
+  }, [navigation, isEditing, userProfile, colorScheme, loading]);
 
   useEffect(() => {
     fetchUserProfile();
@@ -90,7 +221,12 @@ export default function ProfileScreen({ navigation }: Props) {
     showAlert('Logout', 'Are you sure you want to logout?', 'info', async () => {
       try {
         await apiService.logout();
-        navigation.replace('Login');
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
+          })
+        );
       } catch (error: any) {
         console.error('Logout error:', error);
         navigation.replace('Login');
@@ -122,10 +258,12 @@ export default function ProfileScreen({ navigation }: Props) {
 
   if (loading) {
     return (
-      <SafeAreaView style={{ flex: 1 }} className="bg-background">
-        <View className="flex-1 items-center justify-center">
+      <SafeAreaView style={styles.container} className="bg-background">
+        <View style={styles.loadingContainer}>
           <Icon name="account-circle" size={64} color="#6b7280" />
-          <Text className="mt-4 text-lg text-muted-foreground">Loading profile...</Text>
+          <Text style={styles.loadingText} className="text-muted-foreground">
+            Loading profile...
+          </Text>
         </View>
       </SafeAreaView>
     );
@@ -134,40 +272,18 @@ export default function ProfileScreen({ navigation }: Props) {
   const isSuperAdmin = userProfile?.roles === 'SUPERADMIN';
 
   return (
-    <SafeAreaView style={{ flex: 1 }} className="bg-background">
-      {/* Header */}
-      <View className="border-b border-border bg-card px-6 py-4">
-        <View className="flex-row items-center justify-between">
-          <View className="flex-row items-center gap-3">
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Icon name="arrow-left" size={24} color={colorScheme === 'dark' ? '#fff' : '#000'} />
-            </TouchableOpacity>
-            <Text className="text-2xl font-bold text-foreground">Profile</Text>
-          </View>
-
-          {isEditing && (
-            <TouchableOpacity
-              onPress={() => {
-                setIsEditing(false);
-                setFormData({
-                  name: userProfile.name || '',
-                  mobileNumber: userProfile.mobileNumber || '',
-                });
-              }}>
-              <Icon name="close" size={24} color={colorScheme === 'dark' ? '#fff' : '#000'} />
-            </TouchableOpacity>
-          )}
-        </View>
-      </View>
-
-      <ScrollView className="flex-1 px-6 py-6">
+    <SafeAreaView
+      style={styles.container}
+      className="bg-background"
+      edges={['bottom', 'left', 'right']}>
+      <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
         {/* Profile Header Card */}
-        <Card className="mb-6">
-          <CardContent className="items-center py-8">
-            <View className="mb-4 h-24 w-24 items-center justify-center rounded-full bg-primary/10">
-              <Icon name="account" size={48} color="#3b82f6" />
+        <Card style={styles.profileCard}>
+          <CardContent style={styles.profileHeader}>
+            <View style={styles.avatarContainer}>
+              <Icon name="account" size={width * 0.12} color="#3b82f6" />
             </View>
-            <Text className="mb-2 text-2xl font-bold text-foreground">
+            <Text style={styles.nameText} className="text-foreground">
               {userProfile?.name || 'User'}
             </Text>
             {userProfile?.roles && (
@@ -179,21 +295,14 @@ export default function ProfileScreen({ navigation }: Props) {
         </Card>
 
         {/* Profile Information Card */}
-        <Card className="mb-6">
+        <Card style={styles.infoCard}>
           <CardHeader>
-            <View className="flex-row items-center justify-between">
-              <CardTitle>Profile Information</CardTitle>
-              {!isSuperAdmin && !isEditing && (
-                <TouchableOpacity onPress={() => setIsEditing(true)}>
-                  <Icon name="pencil" size={20} color="#3b82f6" />
-                </TouchableOpacity>
-              )}
-            </View>
+            <CardTitle>Profile Information</CardTitle>
           </CardHeader>
-          <CardContent className="gap-4">
+          <CardContent>
             {/* Name */}
-            <View className="gap-2">
-              <Label>Full Name</Label>
+            <View style={styles.fieldContainer}>
+              <Label style={styles.fieldLabel}>Full Name</Label>
               {isEditing ? (
                 <Input
                   value={formData.name}
@@ -201,15 +310,15 @@ export default function ProfileScreen({ navigation }: Props) {
                   placeholder="Enter your name"
                 />
               ) : (
-                <View className="rounded-lg border border-input bg-secondary p-3">
+                <View style={styles.fieldValue} className="border-input bg-secondary">
                   <Text className="text-base text-foreground">{userProfile?.name || 'N/A'}</Text>
                 </View>
               )}
             </View>
 
             {/* Mobile Number */}
-            <View className="gap-2">
-              <Label>Mobile Number</Label>
+            <View style={styles.fieldContainer}>
+              <Label style={styles.fieldLabel}>Mobile Number</Label>
               {isEditing ? (
                 <Input
                   value={formData.mobileNumber}
@@ -219,7 +328,7 @@ export default function ProfileScreen({ navigation }: Props) {
                   maxLength={10}
                 />
               ) : (
-                <View className="rounded-lg border border-input bg-secondary p-3">
+                <View style={styles.fieldValue} className="border-input bg-secondary">
                   <Text className="text-base text-foreground">
                     {userProfile?.mobileNumber || 'N/A'}
                   </Text>
@@ -228,28 +337,24 @@ export default function ProfileScreen({ navigation }: Props) {
             </View>
 
             {/* Email */}
-            <View className="gap-2">
-              <Label>Email</Label>
-              <View className="rounded-lg border border-input bg-secondary p-3">
+            <View style={styles.fieldContainer}>
+              <Label style={styles.fieldLabel}>Email</Label>
+              <View style={styles.fieldValue} className="border-input bg-secondary">
                 <Text className="text-base text-foreground">{userProfile?.email || 'N/A'}</Text>
               </View>
             </View>
 
             {/* User ID */}
-            <View className="gap-2">
-              <Label>User ID</Label>
-              <View className="rounded-lg border border-input bg-secondary p-3">
+            <View style={styles.fieldContainer}>
+              <Label style={styles.fieldLabel}>User ID</Label>
+              <View style={styles.fieldValue} className="border-input bg-secondary">
                 <Text className="text-base text-foreground">{userProfile?.id || 'N/A'}</Text>
               </View>
             </View>
 
             {isEditing && (
-              <View className="mt-4 flex-row gap-3">
-                <Button
-                  onPress={handleSave}
-                  disabled={saving}
-                  className="flex-1"
-                  style={{ backgroundColor: '#22c55e' }}>
+              <View style={styles.buttonRow}>
+                <Button onPress={handleSave} disabled={saving} style={styles.saveButton}>
                   <Text className="font-bold text-white">
                     {saving ? 'Saving...' : 'Save Changes'}
                   </Text>
@@ -263,7 +368,7 @@ export default function ProfileScreen({ navigation }: Props) {
                     });
                   }}
                   variant="outline"
-                  className="flex-1">
+                  style={styles.cancelButton}>
                   <Text>Cancel</Text>
                 </Button>
               </View>
@@ -271,22 +376,20 @@ export default function ProfileScreen({ navigation }: Props) {
           </CardContent>
         </Card>
 
-        {/* Actions Card - Only show for non-SUPERADMIN */}
-        {!isSuperAdmin && (
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>Account Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="gap-3">
-              <TouchableOpacity onPress={handleLogout}>
-                <View className="flex-row items-center gap-3 rounded-lg border border-destructive bg-destructive/10 p-4">
-                  <Icon name="logout" size={24} color="#ef4444" />
-                  <Text className="text-base font-semibold text-destructive">Logout</Text>
-                </View>
-              </TouchableOpacity>
-            </CardContent>
-          </Card>
-        )}
+        {/* Actions Card */}
+        <Card style={styles.actionsCard}>
+          <CardHeader>
+            <CardTitle>Account Actions</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <TouchableOpacity onPress={handleLogout}>
+              <View style={styles.logoutButton}>
+                <Icon name="logout" size={24} color="#ef4444" />
+                <Text className="text-base font-semibold text-destructive">Logout</Text>
+              </View>
+            </TouchableOpacity>
+          </CardContent>
+        </Card>
       </ScrollView>
 
       {/* Alert Dialog */}

@@ -144,7 +144,7 @@ export default function LoginScreen({ navigation }: props) {
                         keyboardType="phone-pad"
                         maxLength={10}
                         aria-labelledby="mobile"
-                        className="border-2 border-blue-500"
+                        //className="border-2 border-blue-500"
                         autoFocus
                       />
                     </View>
