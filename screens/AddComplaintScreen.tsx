@@ -111,10 +111,11 @@ export default function AddComplaintScreen({ navigation }: Props) {
       marginLeft: SPACING.sm,
     },
     descriptionInput: {
-      minHeight: 120,
+      minHeight: 50,
       textAlignVertical: 'top',
       paddingTop: 12,
       borderRadius: 12,
+      marginTop: -SPACING.md,
     },
     photoHeaderRow: {
       flexDirection: 'row',
@@ -454,6 +455,7 @@ export default function AddComplaintScreen({ navigation }: Props) {
       }
 
       const response = await apiService.submitComplaint(formData);
+      console.log(response);
       if (response) {
         showAlert('Success', 'Complaint submitted successfully!', 'success');
         setDescription('');
@@ -468,6 +470,7 @@ export default function AddComplaintScreen({ navigation }: Props) {
         showAlert('Error', response.message || 'Failed to submit complaint.', 'error');
       }
     } catch (error: any) {
+      console.log(error)
       showAlert('Error', error.message || 'Failed to submit complaint. Please try again.', 'error');
     } finally {
       setLoading(false);

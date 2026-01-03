@@ -71,7 +71,8 @@ export default function HomeScreen({ navigation }: Props) {
 
   const fetchNotifications = async () => {
     try {
-      const response = await apiService.getUnreadNotifications(0, 10);
+      const response = await apiService.getUnreadNotifications(0, 100);
+      console.log(response);
       if (response.success && response.data) {
         setNotifications(response.data.content || []);
         setUnreadCount(response.data.totalElements || 0);
