@@ -22,7 +22,7 @@
     "android": {
       "edgeToEdgeEnabled": true,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/campusComplaint.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.rithipcegian.CampusComplaints"
